@@ -1,0 +1,99 @@
+﻿[
+  {
+    "Title": "ABC of C#",
+    "Publisher": "Penguin",
+    "Author": {
+      "Name": "Arthur Laugh"
+    },
+    "Categories": [
+      "Reference",
+      "Educational"
+    ]
+  },
+  {
+    "Title": "Childs Play",
+    "Publisher": "Chapterhouse",
+    "Author": {
+      "Name": "Ellie Smith",
+      "Website": "www.agoodread.com"
+    },
+    "Categories": [
+      "Thriller"
+    ]
+  },
+  {
+    "Title": "Ok lets go",
+    "Publisher": "Chapterhouse",
+    "Author": {
+      "Name": "Ellie Smith",
+      "Website": "www.agoodread.com"
+    },
+    "Categories": [
+      "Thriller",
+      "Comedy"
+    ]
+  },
+  {
+    "Title": "Nuclear Physics for Dummies",
+    "Publisher": "BBC Books",
+    "Author": {
+      "Name": "Albert Einstein",
+      "Website": "www.albert.com"
+    },
+    "Categories": [
+      "Educational"
+    ]
+  },
+  {
+    "Title": "Strangled by Python",
+    "Publisher": "Wroxpress",
+    "Author": {
+      "Name": "Arthur Laugh"
+    },
+    "Categories": [
+      "Reference"
+    ]
+  },
+  {
+    "Title": "Curioser and curioser",
+    "Publisher": "Penguin",
+    "Author": {
+      "Name": "Danny Dyer",
+      "Website": "www.imsohardme.com"
+    },
+    "Categories": [
+      "Autobiography"
+    ]
+  },
+  {
+    "Title": "Just getting started",
+    "Publisher": "Penguin",
+    "Author": {
+      "Name": "Linford Christie"
+    },
+    "Categories": [
+      "Autobiography"
+    ]
+  },
+  {
+    "Title": "101 Gutbuster Jokes",
+    "Publisher": "Penguin",
+    "Author": {
+      "Name": "Slim Pickings",
+      "Website": "www.slimpickings.com"
+    },
+    "Categories": [
+      "Comedy"
+    ]
+  },
+  {
+    "Title": "How to have great lungs",
+    "Publisher": "Associated Press",
+    "Author": {
+      "Name": "Nosmo King"
+    },
+    "Categories": [
+      "Wellbeing"
+    ]
+  }
+]
