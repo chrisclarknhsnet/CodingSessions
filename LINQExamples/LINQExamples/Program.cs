@@ -1,9 +1,11 @@
-﻿using LINQExamples.POCOs;
+﻿using CsvHelper;
+using LINQExamples.POCOs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -13,7 +15,86 @@ namespace LINQExamples
     {
         static void Main(string[] args)
         {
-            var books = loadJson();
+            var data = loadUserTakeupCSV();
+
+            // Simple Where
+            var result = data.Where(ut => ut.EmailAddress == "sharonbiant@yahoo.co.uk").ToList();
+            Console.WriteLine($"{result[0].FirstName} {result[0].LastName}");
+
+            // SingleOrDefault
+            var result2 = data.SingleOrDefault(ut => ut.EmailAddress == "sharonbiant@yahoo.co.uk");
+
+            if (result2 != null)
+            {
+                Console.WriteLine($"{result2.FirstName} {result2.LastName}");
+            }
+
+            var result3 = data.Where(ut => ut.EmailAddress == "xxxxsharonbiant@yahoo.co.uk");
+            
+            if (!result3.Any())
+            {
+                Console.WriteLine("No matches for result3");
+            }
+
+            var result4 = data.FirstOrDefault(ut => ut.AccountType != "DSPT");
+            Console.WriteLine($"{result4?.FirstName} {result4?.LastName} {result4?.AccountType}");
+
+            // UserTake up, most recent first
+            Console.WriteLine("===========================================");
+            
+            var result5 = data.OrderByDescending(o => o.FirstRegistered).ToList();
+
+            for (int i = 0; i < 5; i++)
+            {
+                var ut = result5[i];
+                Console.WriteLine($"{ut.FirstName} {ut.LastName} {ut.FirstRegistered}");
+            }
+
+            Console.WriteLine("===========================================");
+            
+            // SQL SELECT TOP 5
+            foreach (var ut in result5.Take(5))
+            {
+                Console.WriteLine($"{ut.FirstName} {ut.LastName} {ut.FirstRegistered}");
+            }
+
+            Console.WriteLine("===========================================");
+            
+            // SQL OrderBy LastName, FirstName
+            var result6 = data
+                .Where(ut => ut.AccountType == "NHSmail")
+                .OrderBy(o => o.LastName)
+                .ThenBy(o => o.FirstName)
+                .Take(5);
+
+            foreach (var ut in result6)
+            {
+                Console.WriteLine($"{ut.FirstName} {ut.LastName} {ut.FirstRegistered}");
+            }
+
+            Console.WriteLine("===========================================");
+
+            // SQL SELECT AccountType, COUNT(*) FROM UserTakeup GROUP BY AccountType
+
+            var result7 = data.GroupBy(g => g.AccountType);
+
+            foreach (var grp in result7)
+            {
+                Console.WriteLine($"Account type {grp.Key} has {grp.Count()} registered users");
+            }
+
+            foreach (var grp in result7)
+            {
+                var mra = grp.OrderByDescending(o => o.LastAccessed).First();
+                Console.WriteLine($"Account type {grp.Key} most recent access is by {mra.FirstName} {mra.LastName} at {mra.LastAccessed}");
+            }
+
+            var mostpopular = result7.OrderBy(o => o.Count()).First();
+            Console.WriteLine($"Least popular account type is {mostpopular.Key} with {mostpopular.Count()} users");
+            
+            return;
+
+            var books = loadBooksJson();
 
             // .Where - Only returns items matching the input condition/predicate
             //var booksStartingWithA = books.Where(b => b.Title.StartsWith("A"));
@@ -128,13 +209,22 @@ namespace LINQExamples
             }
         }
 
-        private static IList<Book> loadJson()
+        private static IList<Book> loadBooksJson()
         {
             using (StreamReader file = File.OpenText(@"Books.json"))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 var books = (List<Book>)serializer.Deserialize(file, typeof(List<Book>));
                 return books;
+            }
+        }
+
+        private static IList<UserTakeup> loadUserTakeupCSV()
+        {
+            using (TextReader reader = new StreamReader("DSPTUserTakeup.csv"))
+            {
+                var csvReader = new CsvReader(reader, CultureInfo.CurrentCulture);
+                return csvReader.GetRecords<UserTakeup>().ToList();
             }
         }
     }
