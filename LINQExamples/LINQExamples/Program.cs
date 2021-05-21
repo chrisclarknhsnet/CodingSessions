@@ -43,7 +43,7 @@ namespace LINQExamples
             Console.WriteLine("===========================================");
             
             var result5 = data.OrderByDescending(o => o.FirstRegistered).ToList();
-
+            
             for (int i = 0; i < 5; i++)
             {
                 var ut = result5[i];
@@ -89,9 +89,71 @@ namespace LINQExamples
                 Console.WriteLine($"Account type {grp.Key} most recent access is by {mra.FirstName} {mra.LastName} at {mra.LastAccessed}");
             }
 
+            var accTypes = data.Select(a => a.AccountType).Distinct().ToList();
+
+            foreach (var accType in accTypes)
+            {
+                var recs = data.Where(a => a.AccountType == accType);
+                var mra = recs.OrderByDescending(o => o.LastAccessed).First();
+                Console.WriteLine($"Account type {accType} most recent access is by {mra.FirstName} {mra.LastName} at {mra.LastAccessed}");
+            }
+
             var mostpopular = result7.OrderBy(o => o.Count()).First();
             Console.WriteLine($"Least popular account type is {mostpopular.Key} with {mostpopular.Count()} users");
+
+            var words = new List<string>()
+            {
+                "Apple",
+                "Banana",
+                "Cherry",
+                "Apple"
+            };
+
+            var foundWords = new List<string>();
+            bool hasDuplicates = false;
+
+            foreach (var word in words)
+            {
+                if (foundWords.Contains(word))
+                {
+                    hasDuplicates = true;
+                    break;
+                }
+
+                foundWords.Add(word);
+            }
+
+            Console.WriteLine($"Has duplicates long way = {hasDuplicates}");
+
+            hasDuplicates = words.GroupBy(g => g).Any(g => g.Count() > 1);
             
+            Console.WriteLine($"Has duplicates linq way = {hasDuplicates}");
+
+            var fruits = new List<Fruit>()
+            {
+                new Fruit() { Name = "Apple", Variety = "Granny Smith" },
+                new Fruit() { Name = "Banana", Variety = "Ffyes" },
+                new Fruit() { Name = "Cherry", Variety = "Royal" },
+                new Fruit() { Name = "Apple", Variety = "Gala" }
+            };
+
+            var fruitGrps = fruits.GroupBy(g => g.Name);
+            var apples = fruitGrps
+                .Where(g => g.Key == "Apple")
+                .SelectMany(s => s
+                    .Select(v => v.Variety)
+                );
+             
+            foreach (var variety in apples)
+            {
+                Console.WriteLine($"Apples: {variety}");
+            }
+
+            // Respository stuff
+            var reposdata = DataLoader.LoadData("DSPTUserTakeup.csv");
+            var respository = new Repository(reposdata);
+
+
             return;
 
             var books = loadBooksJson();
